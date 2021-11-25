@@ -30,6 +30,7 @@ public class ProductController {
             }
         }
         // Récupère un string contenant DESC ou ASC pour connaître l'ordre de rentrée des paramètres
+        
         String firstParam = params.keySet().stream().findFirst().get();
         System.out.println(firstParam);
         return productDao.listAll(asc , desc, firstParam);
