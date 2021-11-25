@@ -32,9 +32,14 @@ public class ProductController {
             }
         }
         // Récupère un string contenant DESC ou ASC pour connaître l'ordre de rentrée des paramètres
-        if(!params.isEmpty()){
+        if(params.containsKey("asc") || params.containsKey("desc")){
             String firstParam = params.keySet().stream().findFirst().get();
             return productDao.listAll(asc , desc, firstParam);
+        }
+        //Si on a des paramètres, mais ceux ne sont pas ASC et DESC
+        if (!params.isEmpty() && !params.containsKey("asc") && !params.containsKey("desc")){
+            return productDao.listFiltered(params);
+
         }
 
         return productDao.listAll(asc , desc, null);

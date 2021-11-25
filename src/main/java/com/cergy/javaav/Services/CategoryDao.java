@@ -71,6 +71,11 @@ public class CategoryDao {
         return list;
     }
 
+    /**
+     * Renvoie une liste de produit avec une range donnée
+     * @param itemid la range souhaitée obtenu depuis les paramètres de la requète
+     * @return la liste des catégories finale
+     */
     public List<Category> count(String itemid){
         String[] words = itemid.split("-");
         List<Category> list = new ArrayList<>();
