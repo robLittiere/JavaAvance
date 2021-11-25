@@ -8,6 +8,16 @@ public class Product {
     private int rating;
     private String name;
     private Date createdAt;
+    private Date updatedAt;
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     private int categoryId;
 
     public long getId() {

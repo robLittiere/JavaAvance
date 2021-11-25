@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/products")
@@ -17,9 +18,22 @@ public class ProductController {
     private ProductDao productDao;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public List<Product> index(){
-        List<Product> list = productDao.listAll();
-        return list;
+    public List<Product> index(@RequestParam (required = false) String asc, @RequestParam (required = false) String desc, @RequestParam Map<String,String> params){
+        if (desc != null){
+            if(desc.contains(",")){
+                return productDao.listAllBySameOrder(asc, desc);
+            }
+        }
+        if (asc != null){
+            if(asc.contains(",")){
+                return productDao.listAllBySameOrder(asc, desc);
+            }
+        }
+        // Récupère un string contenant DESC ou ASC pour connaître l'ordre de rentrée des paramètres
+        String firstParam = params.keySet().stream().findFirst().get();
+        System.out.println(firstParam);
+        return productDao.listAll(asc , desc, firstParam);
+
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
