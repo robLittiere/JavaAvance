@@ -18,21 +18,26 @@ public class ProductController {
     private ProductDao productDao;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public List<Product> index(@RequestParam (required = false) String asc, @RequestParam (required = false) String desc, @RequestParam Map<String,String> params){
+    public List<Product> index(@RequestParam (required = false) String asc, @RequestParam (required = false) String desc, @RequestParam (required = false) Map<String,String> params){
+        // Regarde si l'utilisateur a saisit desc dans la requète
         if (desc != null){
             if(desc.contains(",")){
                 return productDao.listAllBySameOrder(asc, desc);
             }
         }
+            // Regarde si l'utilisateur a saisit asc dans la requète
         if (asc != null){
             if(asc.contains(",")){
                 return productDao.listAllBySameOrder(asc, desc);
             }
         }
         // Récupère un string contenant DESC ou ASC pour connaître l'ordre de rentrée des paramètres
-        String firstParam = params.keySet().stream().findFirst().get();
-        System.out.println(firstParam);
-        return productDao.listAll(asc , desc, firstParam);
+        if(!params.isEmpty()){
+            String firstParam = params.keySet().stream().findFirst().get();
+            return productDao.listAll(asc , desc, firstParam);
+        }
+
+        return productDao.listAll(asc , desc, null);
 
     }
 
