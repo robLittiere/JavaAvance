@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class ProductDao {
@@ -23,11 +24,14 @@ public class ProductDao {
      */
     public List<Product> listAll(String ascColumnName,String descColumnName, String firstParamEntered) {
         List<Product> list = new ArrayList<>();
+        // Init une query basique
         String query = "SELECT * FROM product";
+        // Récupère toutes les colonnes du produit présentes dans la bdd
         String[] columns = {"name", "type", "categoryId", "rating", "createdAt", "updatedAt"};
 
+        // On regarde si on a les deux tris de présents
         if (ascColumnName != null && descColumnName != null){
-            // Init les deux colonnes qu'on va récupérer
+            // Init deux colonnes qu'on va récupérer
             String ascCol = "";
             String descCol = "";
             // Boucle sur la liste des colonnes
@@ -53,6 +57,7 @@ public class ProductDao {
                     }
             }
         }
+        // On regarde si le tri asc est présent
         else if(ascColumnName != null){
             for (String column : columns) {
                 if (column.equals(ascColumnName)) {
@@ -79,7 +84,6 @@ public class ProductDao {
      * @return
      */
     public List<Product> listAllBySameOrder(String ascColumn, String descColumn){
-        List<Product> list = new ArrayList<>();
         String[] columns = {"name", "type", "categoryId", "rating", "createdAt", "updatedAt"};
 
         if (ascColumn == null){
@@ -182,16 +186,71 @@ public class ProductDao {
         }
         return "Error";
     }
-    public String patchProduct(Product product, int id) {
-        if(product.getId() != id){
-            return "Error";
+
+    /**
+     * Renvoie une liste de produits filtrée en fonction des paramètres entrés
+     * Créer une requète SQL en fonction des paramètres
+     * @param params les paramètres rentrées dans l'uri
+     * @return Une liste de produits filtrée
+     */
+    public List<Product> listFiltered(Map<String, String> params) {
+        // Init la query initiale
+        String query = "SELECT * FROM product WHERE ";
+        // Init un offset
+        int i = 1;
+        // Boucle sur les paramètres
+        for (String key : params.keySet()){
+            // On check si on est sur la dernière itération pour enlever le AND final de la query
+            if (i == params.size()){
+                // Si oui, on écrit la fin de la query
+                query += key + "=" + "'" + params.get(key) + "'";
+                // Si la dernière clé contient plusieurs valeurs
+                if(params.get(key).contains(",")){
+                    // On récupère les valeurs des paramètres dans un array
+                    String[] column = params.get(key).split(",");
+                    // On itère sur l'array et on écrit la query
+                    for (int j = 0; j < column.length; j++){
+                        if(j == column.length){
+                            query += key + "=" + "'" + params.get(key);
+                        }
+                        else {
+                            query += key + "=" + "'" + params.get(key) + "' OR ";
+                        }
+                    }
+                }
+            }
+            // Tant qu'on est pas sur la dernière itération, on écrit normalement notre query
+            else{
+                // On regarde si la clé contient plusieurs valeurs
+                if(params.get(key).contains(",")){
+                    // On récupère les valeurs des paramètres dans un array
+                    String[] column = params.get(key).split(",");
+                    // On itère sur l'array et on écrit la query
+                    for (int j = 0; j < column.length; j++){
+                        if(j == column.length -1){
+                            query += key + "=" + "'" + column[j] +"') AND ";
+
+                        }
+                        else {
+                            if(j == 0){
+                                query += "(" + key + "=" + "'" + column[j] + "' OR ";
+                            }
+                            else{
+                                query += key + "=" + "'" + column[j] + "' OR ";
+
+                            }
+                        }
+                    }
+                }
+                else{
+                    query += key + "=" + "'" + params.get(key) + "' AND ";
+                }
+                // On ajoute +1 à l'offset
+                i++;
+            }
+
         }
-        String query = "UPDATE product SET type = ?, rating = ?, name = ?, categoryId = ?, updatedAt = NOW()  WHERE id = ?";
-        int result = template.update(query, product.getType(), product.getRating(), product.getName(), product.getCategoryId(), id);
-        // Si la requète est réussit :
-        if(result == 1){
-            return "Product modified";
-        }
-        return "Error";
+        System.out.println(query);
+        return template.query(query, BeanPropertyRowMapper.newInstance(Product.class));
     }
 }

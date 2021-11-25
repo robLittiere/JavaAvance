@@ -24,9 +24,10 @@ public class CategoryController {
         return list;
     }
 
+
     @RequestMapping(value = "orders", method = RequestMethod.GET)
     public @ResponseBody
-    ResponseEntity<List<Category>> getitem(@RequestParam("range") String itemid){
+    ResponseEntity<List<Category>> getItemsWithRange(@RequestParam("range") String itemid){
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set("Content-Range",itemid);
         responseHeaders.set("Accept-Range","category");
