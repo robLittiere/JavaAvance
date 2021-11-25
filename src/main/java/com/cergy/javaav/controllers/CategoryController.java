@@ -2,6 +2,7 @@ package com.cergy.javaav.controllers;
 
 import com.cergy.javaav.Services.CategoryDao;
 import com.cergy.javaav.models.Category;
+import com.cergy.javaav.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +41,6 @@ public class CategoryController {
         model.addAttribute("user", new User());
         return "user/add";
     }*/
-
 
     @PostMapping("")
     public String post(@RequestBody Category category) throws IOException {
