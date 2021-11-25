@@ -3,13 +3,13 @@ package com.cergy.javaav.controllers;
 import com.cergy.javaav.Services.CategoryDao;
 import com.cergy.javaav.models.Category;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/categories")
@@ -23,6 +23,18 @@ public class CategoryController {
         return list;
     }
 
+    @RequestMapping(value = "orders", method = RequestMethod.GET)
+    public @ResponseBody
+    ResponseEntity<List<Category>> getitem(@RequestParam("range") String itemid){
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.set("Content-Range",itemid);
+        responseHeaders.set("Accept-Range","category");
+        return  ResponseEntity.ok()
+                .headers(responseHeaders)
+                .body(categoryDao.count(itemid));
+        //return categoryDao.count(itemid);
+    }
+
    /* @GetMapping("/add")
     public String getUser(Model model) {
         model.addAttribute("user", new User());
@@ -31,8 +43,34 @@ public class CategoryController {
 
 
     @PostMapping("")
-    public String submit(@RequestBody Category category) throws IOException {
+    public String post(@RequestBody Category category) throws IOException {
         categoryDao.addCategory(category);
         return "Created";
     }
+
+    @PutMapping ("/{id}")
+    @ResponseBody
+    public String put(@RequestBody Category category, @PathVariable(value="id") int id) throws IOException {
+       return categoryDao.putCategory(category, id);
+
+    }
+
+    @DeleteMapping  ("/{id}")
+    public String delete(@RequestBody Category category, @PathVariable(value="id") int id) throws IOException {
+        return categoryDao.deleteCategory(category,id);
+
+    }
+
+    @GetMapping ("/{id}")
+    public List<Category> get(@RequestBody Category category, @PathVariable(value="id") int id) throws IOException {
+        return categoryDao.getOneCategory(category,id);
+
+    }
+
+
+    /*@GetMapping
+    public @ResponseBody
+    Page<Category> getAllCategories(Pageable pageable){
+        return CategoryRepository.findAll(pageable);
+    }*/
 }
