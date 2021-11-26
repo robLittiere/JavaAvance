@@ -1,5 +1,6 @@
 package com.cergy.javaav.Services;
 import com.cergy.javaav.models.Product;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -343,6 +344,19 @@ public class ProductDao {
     public Boolean isColumnValid(String column){
         String[] columns = {"name", "type", "categoryId", "rating", "createdAt", "updatedAt"};
         return Arrays.stream(columns).anyMatch(column::equals);
+    }
+
+    /**
+     * Retourne un objet produit en fonction d'un string
+     * @param obj
+     * @return
+     */
+    public static String asJsonString(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
 
