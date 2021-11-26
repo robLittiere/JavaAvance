@@ -17,6 +17,14 @@ public class ProductController {
     @Autowired
     private ProductDao productDao;
 
+    /**
+     * Effectue la requète en fonction des paramètres donnés.
+     * Une fois la requète effectuée, on récupère une liste de produit
+     * @param asc La valeur attribuée au paramètre ASC
+     * @param desc La valeur attribuée au paramètre DESC
+     * @param params L'ensemble des paramètres rentrés
+     * @return Une réponse JSON contenant la liste des produits triée ou non
+     */
     @RequestMapping(value = "", method = RequestMethod.GET)
     public List<Product> index(@RequestParam (required = false) String asc, @RequestParam (required = false) String desc, @RequestParam (required = false) Map<String,String> params){
         // Regarde si l'utilisateur a saisit desc dans la requète
@@ -46,23 +54,43 @@ public class ProductController {
 
     }
 
+    /**
+     * Ajoute un produit à la base de donnée
+     * @param product Le produit récupéré du formulaire
+     * @return Une réponse JSON contenant un message de validation ou d'erreur
+     */
     @RequestMapping(value = "", method = RequestMethod.POST)
     public String addProduct(@RequestBody Product product){
         return productDao.addProduct(product);
     }
 
+    /**
+     * Modifie un produit de la base de donnée
+     * @param product Le produit récupéré du formulaire
+     * @return Une réponse JSON contenant un message de validation ou d'erreur
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public String updateProduct(@PathVariable(value="id") int id, @RequestBody Product product){
         return productDao.updateProduct(product, id);
         //return productDao.updateProduct(product);
     }
 
+    /**
+     * Récupère un produit spécifique de la base de donnée
+     * @param id L'id du produit désiré
+     * @return Une réponse JSON contenant le produit voulue
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public Product getById(@PathVariable(value="id") int id){
         Product product =  productDao.getProductById(id);
         return product;
     }
 
+    /**
+     * Supprime un produit de la base de donnée
+     * @param id L'id du produit à supprimer
+     * @return Une réponse JSON contenant un message de validation ou d'erreur
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public String deleteById(@PathVariable(value="id") int id){
         String validation = productDao.deleteProductById(id);

@@ -142,12 +142,22 @@ public class ProductDao {
         }
     }
 
+    /**
+     * Récupère un produit en fonction de son id
+     * @param id l'id du produit
+     * @return Le produit recherché
+     */
     public Product getProductById(int id) {
         String query = "SELECT * FROM product WHERE id = ?";
         Product product = template.queryForObject(query, BeanPropertyRowMapper.newInstance(Product.class), id);
         return product;
     }
 
+    /**
+     * Supprime un produit en fonction de son id
+     * @param id L'id du produit
+     * @return Un string contenant la validation ou non de la requète
+     */
     public String deleteProductById(int id) {
 
         String query = "DELETE FROM product WHERE id = ?";
@@ -158,6 +168,11 @@ public class ProductDao {
         return "Product not found";
     }
 
+    /**
+     * Ajoute un produit
+     * @param product L'objet produit qu'on souhaite ajouter
+     * @return Un string contenant la validation ou non de la requète
+     */
     public String addProduct(Product product) {
         // Ajouter la date au produit
         //Date date = new Date();
@@ -174,6 +189,12 @@ public class ProductDao {
         return "Error";
     }
 
+    /**
+     * Modifie un produit en fonction de son id
+     * @param product Un object produit contenant les modifications
+     * @param id L'id du produit qu'on souhaite modifier
+     * @return
+     */
     public String updateProduct(Product product, int id) {
         if(product.getId() != id){
             return "Error";
@@ -202,21 +223,27 @@ public class ProductDao {
         for (String key : params.keySet()){
             // On check si on est sur la dernière itération pour enlever le AND final de la query
             if (i == params.size()){
-                // Si oui, on écrit la fin de la query
-                query += key + "=" + "'" + params.get(key) + "'";
                 // Si la dernière clé contient plusieurs valeurs
                 if(params.get(key).contains(",")){
                     // On récupère les valeurs des paramètres dans un array
                     String[] column = params.get(key).split(",");
                     // On itère sur l'array et on écrit la query
                     for (int j = 0; j < column.length; j++){
-                        if(j == column.length){
-                            query += key + "=" + "'" + params.get(key);
+                        if(j == column.length -1){
+                            query += key + "=" + "'" + column[j] +"')";
                         }
                         else {
-                            query += key + "=" + "'" + params.get(key) + "' OR ";
+                            if(j == 0){
+                                query += "(" + key + "=" + "'" + column[j] + "' OR ";
+                            }
+                            else{
+                                query += key + "=" + "'" + column[j] + "' OR ";
+                            }
                         }
                     }
+                }
+                else {
+                    query += key + "=" + "'" + params.get(key) + "'";
                 }
             }
             // Tant qu'on est pas sur la dernière itération, on écrit normalement notre query
@@ -237,7 +264,6 @@ public class ProductDao {
                             }
                             else{
                                 query += key + "=" + "'" + column[j] + "' OR ";
-
                             }
                         }
                     }
