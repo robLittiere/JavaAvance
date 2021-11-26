@@ -1,4 +1,5 @@
 package com.cergy.javaav.Services;
+import com.cergy.javaav.models.Category;
 import com.cergy.javaav.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -343,6 +344,18 @@ public class ProductDao {
     public Boolean isColumnValid(String column){
         String[] columns = {"name", "type", "categoryId", "rating", "createdAt", "updatedAt"};
         return Arrays.stream(columns).anyMatch(column::equals);
+    }
+
+    public Object count(String itemid) {
+        String[] words = itemid.split("-");
+        List<Product> list = new ArrayList<>();
+        List<Product> List = new ArrayList<>();
+        String query = "SELECT * FROM product";
+        list = template.query(query, BeanPropertyRowMapper.newInstance(Product.class));
+        for (int i = Integer.parseInt(words[0]); i<Integer.parseInt(words[1]);i++){
+            List.add(list.get(i));
+        }
+        return List;
     }
 }
 
