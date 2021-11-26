@@ -49,7 +49,7 @@ public class ProductController {
             return productDao.listFiltered(params);
 
         }
-
+        productDao.isColumnValid("coucou");
         return productDao.listAll(asc , desc, null);
 
     }
