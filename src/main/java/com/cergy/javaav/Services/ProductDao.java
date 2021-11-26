@@ -1,6 +1,6 @@
 package com.cergy.javaav.Services;
+import com.cergy.javaav.models.Category;
 import com.cergy.javaav.models.Product;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -346,17 +346,16 @@ public class ProductDao {
         return Arrays.stream(columns).anyMatch(column::equals);
     }
 
-    /**
-     * Retourne un objet produit en fonction d'un string
-     * @param obj
-     * @return
-     */
-    public static String asJsonString(final Object obj) {
-        try {
-            return new ObjectMapper().writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+    public Object count(String itemid) {
+        String[] words = itemid.split("-");
+        List<Product> list = new ArrayList<>();
+        List<Product> List = new ArrayList<>();
+        String query = "SELECT * FROM product";
+        list = template.query(query, BeanPropertyRowMapper.newInstance(Product.class));
+        for (int i = Integer.parseInt(words[0]); i<Integer.parseInt(words[1]);i++){
+            List.add(list.get(i));
         }
+        return List;
     }
 }
 

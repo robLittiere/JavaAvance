@@ -3,10 +3,10 @@ package com.cergy.javaav.controllers;
 import com.cergy.javaav.Services.ProductDao;
 import com.cergy.javaav.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -95,6 +95,18 @@ public class ProductController {
     public String deleteById(@PathVariable(value="id") int id){
         String validation = productDao.deleteProductById(id);
         return validation;
+    }
+
+    @RequestMapping(value = "orders", method = RequestMethod.GET)
+    public @ResponseBody
+    ResponseEntity<Object> getItemsWithRange(@RequestParam("range") String itemid){
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.set("Content-Range",itemid);
+        responseHeaders.set("Accept-Range","product");
+        return  ResponseEntity.ok()
+                .headers(responseHeaders)
+                .body(productDao.count(itemid));
+        
     }
 
 
