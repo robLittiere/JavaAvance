@@ -1,12 +1,14 @@
 package com.cergy.javaav.controllers;
 
 import com.cergy.javaav.Services.ProductDao;
+import com.cergy.javaav.models.Category;
 import com.cergy.javaav.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -106,7 +108,12 @@ public class ProductController {
         return  ResponseEntity.ok()
                 .headers(responseHeaders)
                 .body(productDao.count(itemid));
-        
+
+    }
+
+    @RequestMapping(value = "search", method = RequestMethod.GET)
+    public List<Product> search(@RequestParam (required = false) HashMap<String,String> params){
+        return productDao.search(params);
     }
 
 

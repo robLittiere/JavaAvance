@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Repository
 public class ProductDao {
@@ -357,6 +359,80 @@ public class ProductDao {
         }
         return List;
     }
+
+    public List<Product> search(Map<String, String> params) {
+        List<Product> list = new ArrayList<>();
+        if (params.containsKey("name")){
+            if (params.get("name").contains(",")){
+                String[] words = params.get("name").split(",");
+                String query = "SELECT * FROM product WHERE ";
+                for (int i = 0; i< words.length;i++){
+                    query +="name = " +"'"+words[i]+"'"+"OR ";
+                    if (i== words.length-1){
+                        query += "name = " +"'"+words[words.length-1]+"'";
+                    }
+                }
+                list = template.query(query, BeanPropertyRowMapper.newInstance(Product.class));
+                System.out.println(query);
+                return list;
+            }else {
+                String query = "SELECT * FROM product WHERE name like ";
+                query += "'" + params.get("name") + "'";
+                list = template.query(query, BeanPropertyRowMapper.newInstance(Product.class));
+                System.out.println(query);
+                return list;
+            }
+        }
+        if (params.containsKey("type")){
+            String query = "SELECT * FROM product WHERE type like ";
+            query += "'"+ params.get("type")+"'";
+            list = template.query(query, BeanPropertyRowMapper.newInstance(Product.class));
+            System.out.println();
+            return list;
+        }
+        if (params.containsKey("rating")){
+            String query = "SELECT * FROM product WHERE rating like ";
+            query += "'"+ params.get("rating")+"'";
+            list = template.query(query, BeanPropertyRowMapper.newInstance(Product.class));
+            System.out.println();
+            return list;
+        }
+        if (params.containsKey("createdAt")){
+            String query = "SELECT * FROM product WHERE createdAt like ";
+            query += "'"+ params.get("name")+"'";
+            list = template.query(query, BeanPropertyRowMapper.newInstance(Product.class));
+            System.out.println();
+            return list;
+        }
+        if (params.containsKey("categoryId")){
+            String query = "SELECT * FROM product WHERE categoryId like ";
+            query += "'"+ params.get("name")+"'";
+            list = template.query(query, BeanPropertyRowMapper.newInstance(Product.class));
+            System.out.println();
+            return list;
+        }
+        if (params.containsKey("updatedAt")){
+            String query = "SELECT * FROM product WHERE updatedAt like ";
+            query += "'"+ params.get("name")+"'";
+            list = template.query(query, BeanPropertyRowMapper.newInstance(Product.class));
+            System.out.println();
+            return list;
+        }
+
+        return list;
+    }
+
+    /*public boolean getSpecialCharacterCount(String s) {
+        if (s == null || s.trim().isEmpty()) {
+            System.out.println("Incorrect format of string");
+            return false;
+        }
+        Pattern p = Pattern.compile("[^A-Za-z0-9]");
+        Matcher m = p.matcher(s);
+        // boolean b = m.matches();
+        boolean b = ((Matcher) m).find();
+        return b;
+    }*/
 }
 
 

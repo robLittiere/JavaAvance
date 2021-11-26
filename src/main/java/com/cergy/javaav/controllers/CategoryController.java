@@ -2,7 +2,6 @@ package com.cergy.javaav.controllers;
 
 import com.cergy.javaav.Services.CategoryDao;
 import com.cergy.javaav.models.Category;
-import com.cergy.javaav.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/categories")
@@ -37,11 +37,12 @@ public class CategoryController {
         //return categoryDao.count(itemid);
     }
 
-   /* @GetMapping("/add")
-    public String getUser(Model model) {
-        model.addAttribute("user", new User());
-        return "user/add";
-    }*/
+    @RequestMapping(value = "search", method = RequestMethod.GET)
+    public List<Category> search(@RequestParam (required = false) Map<String,String> params){
+        return categoryDao.search(params);
+    }
+
+
 
     @PostMapping("")
     public String post(@RequestBody Category category) throws IOException {
@@ -69,9 +70,4 @@ public class CategoryController {
     }
 
 
-    /*@GetMapping
-    public @ResponseBody
-    Page<Category> getAllCategories(Pageable pageable){
-        return CategoryRepository.findAll(pageable);
-    }*/
 }
