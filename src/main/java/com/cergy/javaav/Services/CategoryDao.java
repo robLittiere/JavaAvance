@@ -1,6 +1,8 @@
 package com.cergy.javaav.Services;
 
 import com.cergy.javaav.models.Category;
+import com.cergy.javaav.models.Product;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -88,8 +90,14 @@ public class CategoryDao {
             List.add(list.get(i));
         }
         return List;
+    }
 
-
+    public static String asJsonString(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
