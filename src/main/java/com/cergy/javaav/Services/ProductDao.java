@@ -385,18 +385,35 @@ public class ProductDao {
             }
         }
         if (params.containsKey("type")){
-            String query = "SELECT * FROM product WHERE type like ";
-            query += "'"+ params.get("type")+"'";
-            list = template.query(query, BeanPropertyRowMapper.newInstance(Product.class));
-            System.out.println();
-            return list;
+            if(params.get("type").contains(",")){
+                String[] words = params.get("type").split(",");
+                String query = "SELECT * FROM product WHERE ";
+                for (int i = 0; i< words.length;i++){
+                    query +="type = " +"'"+words[i]+"'"+"OR ";
+                    if (i== words.length-1){
+                        query += "type = " +"'"+words[words.length-1]+"'";
+                    }
+                }
+                list = template.query(query, BeanPropertyRowMapper.newInstance(Product.class));
+                System.out.println(query);
+            }else{
+                String query = "SELECT * FROM product WHERE type like ";
+                query += "'"+ params.get("type")+"'";
+                list = template.query(query, BeanPropertyRowMapper.newInstance(Product.class));
+                System.out.println();
+                return list;
+            }
         }
         if (params.containsKey("rating")){
-            String query = "SELECT * FROM product WHERE rating like ";
-            query += "'"+ params.get("rating")+"'";
-            list = template.query(query, BeanPropertyRowMapper.newInstance(Product.class));
-            System.out.println();
-            return list;
+            if(params.get("type").contains(",")){
+
+            }else{
+                String query = "SELECT * FROM product WHERE rating like ";
+                query += "'"+ params.get("rating")+"'";
+                list = template.query(query, BeanPropertyRowMapper.newInstance(Product.class));
+                System.out.println();
+                return list;
+            }
         }
         if (params.containsKey("createdAt")){
             String query = "SELECT * FROM product WHERE createdAt like ";
